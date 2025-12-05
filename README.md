@@ -27,4 +27,82 @@ This project is designed for rapid prototyping, demos, and future deployment on 
 ---
 
 ## 📁 Project Structure
+```
+ace-demo/
+│
+├── src/
+│ ├── App.jsx / App.tsx
+│ ├── components/
+│ ├── styles/
+│ └── ...
+│
+├── public/
+│
+├── package.json
+├── vite.config.js (if using Vite)
+├── Dockerfile
+├── .gitignore
+└── README.md
+```
 
+---
+
+## 🛠️ Local Development
+
+### 1. Install dependencies
+```bash
+npm install
+npm run dev
+npm run build
+npm run preview
+docker build -t ace-demo .
+docker run -p 8080:80 ace-demo
+```
+
+The app is now available at:
+👉 http://localhost:8080
+
+---
+
+## ☁️ AWS Deployment (Recommended: ECS Fargate)
+### High-Level Steps
+
+ - Push the Docker image to Amazon ECR
+ - Create an ECS Fargate cluster
+ - Create a Task Definition that uses your ECR image
+ - Deploy the Task using an ECS Service behind an Application Load Balancer
+ - Point a Route 53 domain (e.g., demo.yalor.co) to your ALB
+
+A GitHub Actions CI/CD workflow can automatically:
+ - Build your Docker image
+ - Push it to ECR
+ - Update ECS on every commit to main
+(Ask and I can generate the complete deploy.yml workflow.)
+
+---
+
+## 🔐 Environment Variables
+
+If your demo uses configurable values, add the following:
+
+|Variable|Description|
+|------|------|
+|VITE_API_BASE_URL|	Backend or API gateway endpoint|
+|VITE_ENV|	development or production|
+
+---
+
+## 📘 Future Enhancements
+ - Integration with the real ACE inference engine
+ - DSP/SSP connector simulation
+ - Authentication via login.yalor.co (OIDC / OAuth2)
+ - Multi-agent orchestration
+ - Analytics instrumentation pipeline
+
+---
+
+## 👨‍💻 Maintainer
+
+Alvin Pillay
+Founder — ACE (AI Commerce Exchange)
+https://yalor.co
