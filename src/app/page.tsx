@@ -7,7 +7,7 @@ import { ChatMessage, Role } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { AceSponsoredCard } from '../components/AceSponsoredCard';
 import { DeveloperPanel } from '../components/DeveloperPanel';
-import { AdCpPayload } from '../src/infrastructure/events';
+import { AdCpPayload } from '../infrastructure/events';
 
 // Internal type for rendering mixed content in the chat stream
 type UIBlock =
@@ -55,7 +55,7 @@ export default function Home() {
     try {
       // 2. Fire concurrent requests to both the AI Provider AND the ACE MCP
       // This is the core magic behind Gen AI + Commerce without latency bottlenecks.
-      const chatPromise = fetch('/api/chat', {
+      const chatPromise = fetch('/api/demo/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userText })

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { ExternalLink, Tag } from 'lucide-react';
-import { AdCpPayload } from '../src/infrastructure/events';
+import { AdCpPayload } from '../infrastructure/events';
 
 interface AceSponsoredCardProps {
     payload: AdCpPayload;

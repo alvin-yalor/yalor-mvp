@@ -8,7 +8,7 @@ import {
     OpportunityFannedOutPayload,
     BidAcceptedPayload,
     AdCpPayload
-} from '../src/infrastructure/events';
+} from '../infrastructure/events';
 
 interface LoggedEvent {
     id: string;
@@ -35,7 +35,7 @@ export const DeveloperPanel = () => {
     }, [events]);
 
     useEffect(() => {
-        const eventSource = new EventSource('/api/sse');
+        const eventSource = new EventSource('/api/demo/sse');
 
         eventSource.onopen = () => setIsConnected(true);
         eventSource.onerror = () => setIsConnected(false);

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { eventBus } from '../../../src/infrastructure/eventBus';
-import { AceEvent } from '../../../src/infrastructure/events';
+import { eventBus } from '../../../../infrastructure/eventBus';
+import { AceEvent } from '../../../../infrastructure/events';
 
 export const dynamic = 'force-dynamic';
 

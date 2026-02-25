@@ -9,7 +9,7 @@ import { AceEvent, OpportunityIdentifiedPayload, BidReceivedPayload, OpenRtbNati
 export class DummyCouponConnector {
 
     // Simulated endpoint for the MVP (this will hit next.js API routes later)
-    private readonly WEBHOOK_URL = 'http://localhost:3000/api/mock-partners/coupon-network';
+    private readonly WEBHOOK_URL = 'http://localhost:3000/api/ace-media-net/mock-partners/coupon-network';
     private readonly TIMEOUT_MS = 200; // Hard timeout for the DSP to reply
 
     public async requestBid(opportunity: OpportunityIdentifiedPayload): Promise<void> {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateText } from 'ai';
-import { chatModel } from '../../../src/infrastructure/llm/provider';
+import { chatModel } from '../../../../infrastructure/llm/provider';
 
 const SYSTEM_PROMPT = `
 You are a helpful, polite, and knowledgeable virtual shopping assistant for "Yalor Groceries".

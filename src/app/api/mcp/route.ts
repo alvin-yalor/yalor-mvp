@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { eventBus } from '../../../src/infrastructure/eventBus';
-import { AceEvent, UserInputPayload, AdCpPayload, BidAcceptedPayload } from '../../../src/infrastructure/events';
+import { eventBus } from '../../../infrastructure/eventBus';
+import { AceEvent, UserInputPayload, AdCpPayload, BidAcceptedPayload } from '../../../infrastructure/events';
 
 // FORCE INITIALIZATION OF ACE INTERNAL LISTENERS
-import '../../../src/ace-core/analyzer';
-import '../../../src/ace-core/assessor';
-import '../../../src/ace-media-net/router';
-import '../../../src/ace-media-net/connectors/dummyCouponConnector';
+import '../../../ace-core/analyzer';
+import '../../../ace-core/assessor';
+import '../../../ace-media-net/router';
+import '../../../ace-media-net/connectors/dummyCouponConnector';
 
 // In a real production system, this mapping requires a persistent store (Redis) 
 // to wait for the auction to finish. For MVP, we use an in-memory Promise Map 
