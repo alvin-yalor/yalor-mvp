@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logger } from '../../../infrastructure/logger';
 import { eventBus } from '../../../infrastructure/eventBus';
 import { AceEvent, UserInputPayload, AdCpPayload, BidAcceptedPayload } from '../../../infrastructure/events';
 
@@ -24,7 +25,7 @@ eventBus.safeOn(AceEvent.BID_ACCEPTED, (acceptedBid: BidAcceptedPayload) => {
     // We now have the Session ID directly from the accepted bid payload.
     const dynamicSessionId = acceptedBid.sessionId;
 
-    console.log(`[ACE-MCP] Received final accepted bid for Opp ${acceptedBid.opportunityId} (Session: ${dynamicSessionId}). Preparing AdCP payload for egress...`);
+    logger.info(`[ACE-MCP] Received final accepted bid for Opp ${acceptedBid.opportunityId} (Session: ${dynamicSessionId}). Preparing AdCP payload for egress...`);
 
     const resolver = pendingSessions.get(dynamicSessionId);
     if (resolver) {
@@ -75,7 +76,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing message' }, { status: 400 });
         }
 
-        console.log(`[ACE-MCP] Webhook called: session=${sessionId}, msg="${message}"`);
+        logger.info(`[ACE-MCP] Webhook called: session=${sessionId}, msg="${message}"`);
 
         // 1. We create a Promise that will resolve when the ACE Event Bus finishes
         // processing the intent, running the auction, and determining a winner.
@@ -109,15 +110,15 @@ export async function POST(req: Request) {
         const adcpResult = await aceEgressPromise;
 
         if (adcpResult) {
-            console.log(`[ACE-MCP] Returning valid AdCP Payload to Client ID: ${sessionId}`);
+            logger.info(`[ACE-MCP] Returning valid AdCP Payload to Client ID: ${sessionId}`);
             return NextResponse.json({ status: 'success', payload: adcpResult }, { status: 200 });
         } else {
-            console.log(`[ACE-MCP] Request timed out or no opp found. Returning empty to ${sessionId}`);
+            logger.info(`[ACE-MCP] Request timed out or no opp found. Returning empty to ${sessionId}`);
             return NextResponse.json({ status: 'no_opportunity' }, { status: 200 });
         }
 
-    } catch (e: any) {
-        console.error(`[ACE-MCP] Error processing request:`, e);
+    } catch (e) {
+        logger.error({ err: e }, `[ACE-MCP] Error processing request:`);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }

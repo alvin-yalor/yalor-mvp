@@ -2,6 +2,9 @@ export enum AceEvent {
   // Input from Client (Dummy AI Platform) -> ACE Core
   USER_INPUT_RECEIVED = 'USER_INPUT_RECEIVED',
 
+  // Core NLP -> Internal
+  INTENT_ANALYZED = 'INTENT_ANALYZED',
+
   // Internal ACE Core -> ACE Media Network
   OPPORTUNITY_IDENTIFIED = 'OPPORTUNITY_IDENTIFIED',
 
@@ -29,6 +32,14 @@ export interface UserInputPayload {
   timestamp: number;
 }
 
+export interface IntentAnalyzedPayload {
+  sessionId: string;
+  hasCommercialIntent: boolean;
+  confidenceScore: number;
+  iabCategory?: string;
+  reasoning: string;
+}
+
 // ==========================================
 // 2. Internal Architected Payloads
 // ==========================================
@@ -50,6 +61,9 @@ export interface OpportunityIdentifiedPayload {
   opportunityId: string;
   intentContext: string; // e.g., "Looking for running shoes"
   funnelStage: 'UPPER' | 'MID' | 'LOWER';
+  iabCategory: string; // e.g., "IAB8-18 (Food & Drink)"
+  confidenceScore: number; // 0-100 rating from the Analyzer LLM
+  evidenceQuotes: string[]; // Strict quotes from the user message justifying the classification
   userProfileSnapshot: UserProfile; // Passed to scoring gates
   qualificationScore: number;       // The pre-qualification score
 }

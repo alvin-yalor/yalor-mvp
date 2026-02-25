@@ -89,8 +89,8 @@ export default function Home() {
         setMessages(prev => [...prev, { type: 'text', id: uuidv4(), role: 'assistant', content: "Sorry, I encountered an error." }]);
       }
 
-    } catch (err) {
-      console.error("Chat orchestration error:", err);
+    } catch (e) {
+      console.error({ err: e, sessionId: sessionId.current }, "Chat orchestration error:");
     } finally {
       setIsLoading(false);
     }

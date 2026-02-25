@@ -9,6 +9,7 @@ This Next.js application implements the Phase 1 (MVP) architecture for the **AI 
 - **Generative UI Interactive Cards**: Dynamic injection of OpenRTB-compliant payload creatives directly into the LLM chat stream.
 - **Event-Driven Architecture (EDA)**: Fully decoupled Message Control Protocol (MCP) bridging AI platforms with standard AdTech networks.
 - **Domain-Isolated Micro-components**: Clear structural boundaries between the "Demo" visual layers, the "ACE Core", and the simulated "Media Network".
+- **Centralized Structured Logging**: Persistent JSON file and pretty-print console logging utilizing Pino.
 
 ---
 
@@ -24,14 +25,14 @@ yalor-mvp/
 │ │   ├── api/
 │ │   │   ├── demo/           # Vercel AI Chat Backend & SSE Streams
 │ │   │   ├── mcp/            # The ACE Message Control Protocol (Core Ingress)
-│ │   │   └── ace-media-net/  # Simulated External DSP/SSP Webhooks
+│ │   │   └── ace-media-net/  # Simulated External DSP/SSP Webhooks (DV360, Criteo, etc.)
 │ │   └── page.tsx          # Dual-Pane Client UI
 │ │
 │ ├── components/           # React Components (ChatInput, DeveloperPanel, etc.)
 │ │
 │ ├── ace-core/             # Handlers representing the AI Intent analysis and Bid assessment
-│ ├── ace-media-net/        # Routers to fan-out opportunities to external ad networks
-│ └── infrastructure/       # Global singletons (EventBus, LLM Provider, Zod Event Schemas)
+│ ├── ace-media-net/        # Routers fanning out to external AdTech platforms (OpenRTB, AdCP)
+│ └── infrastructure/       # Global singletons (EventBus, LLM Provider, Zod Event Schemas, Logger)
 │
 ├── .env.local
 ├── package.json
@@ -75,6 +76,7 @@ To visually verify the end-to-end integration of conversational AI with the prog
    - The **Developer Console** (right panel) instantly springs into action, streaming the `AceEvent` lifecycle over SSE as the backend processes the `OPPORTUNITY_IDENTIFIED` intent, fans it out, and completes the internal auction.
    - The LLM streams back a natural, text-based response.
    - The **Sponsored Suggestion card** (e.g., Wagyu Steaks) is natively injected into the chat stream via the final accepted bid.
+   - The system natively handles concurrent processing and multi-turn exchanges by securely tracking and resolving the persistent conversational `Session ID` across all event boundaries.
 
 4. **Automated ARTF Tracking**: Scrolling the card into view silently fires the `on_ad_rendered` webhook, validating viewability logic.
 

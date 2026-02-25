@@ -1,3 +1,4 @@
+import { logger } from '../../infrastructure/logger';
 import { eventBus } from '../../infrastructure/eventBus';
 import { AceEvent, OpportunityIdentifiedPayload, BidReceivedPayload, OpenRtbNativeAd } from '../../infrastructure/events';
 
@@ -14,7 +15,7 @@ export class DummyCouponConnector {
 
     public async requestBid(opportunity: OpportunityIdentifiedPayload): Promise<void> {
         try {
-            console.log(`[DummyCouponConnector] Sending Opp ${opportunity.opportunityId} to external webhook...`);
+            logger.info(`[DummyCouponConnector] Sending Opp ${opportunity.opportunityId} to external webhook...`);
 
             // 1. We create a timeout promise
             const timeoutPromise = new Promise((_, reject) =>
@@ -42,14 +43,15 @@ export class DummyCouponConnector {
                     rawPayload: response.nativeAd
                 };
 
-                console.log(`[DummyCouponConnector] Received valid bid $${bidPayload.bidAmount}. Emitting BID_RECEIVED.`);
+                logger.info(`[DummyCouponConnector] Received valid bid $${bidPayload.bidAmount}. Emitting BID_RECEIVED.`);
                 eventBus.safeEmit(AceEvent.BID_RECEIVED, bidPayload);
             } else {
-                console.log(`[DummyCouponConnector] No bid response for Opp ${opportunity.opportunityId}.`);
+                // If there's no bid amount, the partner passed on the request
+                logger.info(`[DummyCouponConnector] No bid response for Opp ${opportunity.opportunityId}.`);
             }
 
-        } catch (error: any) {
-            console.warn(`[DummyCouponConnector] Failed to get bid for Opp ${opportunity.opportunityId}: ${error.message}`);
+        } catch (e) {
+            console.warn({ err: e, sessionId: opportunity.sessionId }, `[DummyCouponConnector] Failed to get bid for Opp ${opportunity.opportunityId}`);
         }
     }
 
@@ -66,6 +68,9 @@ export class DummyCouponConnector {
                     opportunityId: opportunity.opportunityId,
                     intentContext: opportunity.intentContext,
                     funnelStage: opportunity.funnelStage,
+                    iabCategory: opportunity.iabCategory,
+                    confidenceScore: opportunity.confidenceScore,
+                    evidence: opportunity.evidenceQuotes,
                     userProfile: opportunity.userProfileSnapshot
                 })
             });
@@ -74,7 +79,7 @@ export class DummyCouponConnector {
             return await res.json();
 
         } catch (e) {
-            console.error(`[DummyCouponConnector] HTTP request failed:`, e);
+            logger.error({ err: e, sessionId: opportunity.sessionId }, `[DummyCouponConnector] HTTP request failed:`);
             return { bidAmount: 0 };
         }
     }

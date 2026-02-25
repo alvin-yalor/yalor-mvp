@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logger } from '../../../../infrastructure/logger';
 import { eventBus } from '../../../../infrastructure/eventBus';
 import { AceEvent } from '../../../../infrastructure/events';
 
@@ -46,7 +47,7 @@ export async function GET(req: Request) {
                 } catch (e) {
                     // stream might already be closed
                 }
-                console.log('[SSE] Client disconnected, listeners cleaned up.');
+                logger.info('[SSE] Client disconnected, listeners cleaned up.');
             });
         },
     });

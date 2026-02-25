@@ -1,3 +1,4 @@
+import { logger } from '../infrastructure/logger';
 import { eventBus } from '../infrastructure/eventBus';
 import { AceEvent, OpportunityIdentifiedPayload } from '../infrastructure/events';
 import { dummyCouponConnector } from './connectors/dummyCouponConnector';
@@ -13,7 +14,7 @@ export class MediaNetworkRouter {
 
     private listenToAceCore() {
         eventBus.safeOn(AceEvent.OPPORTUNITY_IDENTIFIED, async (opportunity: OpportunityIdentifiedPayload) => {
-            console.log(`[MediaNetworkRouter] Received qualified Opp: ${opportunity.opportunityId} (Intent: ${opportunity.intentContext})`);
+            logger.info(`[MediaNetworkRouter] Received qualified Opp: ${opportunity.opportunityId} (Intent: ${opportunity.intentContext})`);
             await this.fanOutToConnectors(opportunity);
         });
     }
@@ -29,7 +30,7 @@ export class MediaNetworkRouter {
             // add more connectors here later
         ];
 
-        console.log(`[MediaNetworkRouter] Fanning out to ${connectors.length} connectors...`);
+        logger.info(`[MediaNetworkRouter] Fanning out to ${connectors.length} connectors...`);
 
         eventBus.safeEmit(AceEvent.OPPORTUNITY_FANNED_OUT, {
             sessionId: opportunity.sessionId,

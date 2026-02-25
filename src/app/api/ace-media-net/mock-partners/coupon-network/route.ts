@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logger } from '../../../../../infrastructure/logger';
 
 /**
  * The Dummy AdTech Platform (Coupon Network).
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
         // The request format expected from ACE Media Network Connectors
         const { intentContext, funnelStage } = body;
 
-        console.log(`[Dummy-Coupon-Network] Received Bid Request. Intent: "${intentContext}". Funnel: ${funnelStage}`);
+        logger.info(`[Dummy-Coupon-Network] Received Bid Request. Intent: "${intentContext}". Funnel: ${funnelStage}`);
 
         // Simulate DSP bid processing time (50ms - 150ms)
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
         const lowerIntent = intentContext?.toLowerCase() || '';
 
         if (lowerIntent.includes('bbq') || lowerIntent.includes('steak') || lowerIntent.includes('meat')) {
-            console.log(`[Dummy-Coupon-Network] Found matching campaign for 'Meat'. Bidding $1.50...`);
+            logger.info(`[Dummy-Coupon-Network] Found matching campaign for 'Meat'. Bidding $1.50...`);
 
             // Standardized OpenRTB 'adm' Native payload construction
             return NextResponse.json({
@@ -41,11 +42,11 @@ export async function POST(req: Request) {
         }
 
         // No matching campaign found, pass on bidding
-        console.log(`[Dummy-Coupon-Network] No match found. Passing (Bid: $0).`);
+        logger.info(`[Dummy-Coupon-Network] No match found. Passing (Bid: $0).`);
         return NextResponse.json({ bidAmount: 0 }, { status: 200 });
 
     } catch (e) {
-        console.error(`[Dummy-Coupon-Network] Error handling webhook:`, e);
+        logger.error({ err: e }, `[Dummy-Coupon-Network] Error handling webhook:`);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
 }

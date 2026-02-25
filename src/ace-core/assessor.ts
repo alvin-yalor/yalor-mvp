@@ -1,3 +1,4 @@
+import { logger } from '../infrastructure/logger';
 import { eventBus } from '../infrastructure/eventBus';
 import { AceEvent, BidReceivedPayload, BidAcceptedPayload } from '../infrastructure/events';
 
@@ -36,7 +37,7 @@ export class BidAssessor {
         }
 
         // Add bid to ledger
-        console.log(`[BidAssessor] Registered bid from ${bid.partnerId} for Opp: ${bid.opportunityId}. Amount: $${bid.bidAmount}`);
+        logger.info(`[BidAssessor] Registered bid from ${bid.partnerId} for Opp: ${bid.opportunityId}. Amount: $${bid.bidAmount}`);
         this.auctions.get(bid.opportunityId)!.bids.push(bid);
     }
 
@@ -46,13 +47,13 @@ export class BidAssessor {
 
         // Phase 1 MVP Logic: Just pick the highest bid price
         // In Phase 2, this is where XGBoost / ML inference runs to calculate "Expected Yield"
-        console.log(`[BidAssessor] Closing auction for Opp: ${opportunityId}. Evaluating ${ledger.bids.length} bids...`);
+        logger.info(`[BidAssessor] Closing auction for Opp: ${opportunityId}. Evaluating ${ledger.bids.length} bids...`);
 
         const winningBid = ledger.bids.reduce((highest, current) => {
             return (current.bidAmount > highest.bidAmount) ? current : highest;
         });
 
-        console.log(`[BidAssessor] Winner Selected: ${winningBid.partnerId} at $${winningBid.bidAmount}. Emitting BID_ACCEPTED.`);
+        logger.info(`[BidAssessor] Winner Selected: ${winningBid.partnerId} at $${winningBid.bidAmount}. Emitting BID_ACCEPTED.`);
 
         const acceptPayload: BidAcceptedPayload = {
             sessionId: winningBid.sessionId,

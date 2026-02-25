@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Activity, Zap, Network, Gavel, Send, Terminal } from 'lucide-react';
+import { Activity, Zap, Network, Gavel, Send, Terminal, Brain } from 'lucide-react';
 import {
     AceEvent,
     OpportunityIdentifiedPayload,
     OpportunityFannedOutPayload,
     BidAcceptedPayload,
-    AdCpPayload
+    AdCpPayload,
+    IntentAnalyzedPayload
 } from '../infrastructure/events';
 
 interface LoggedEvent {
@@ -19,7 +20,7 @@ interface LoggedEvent {
 
 export const DeveloperPanel = () => {
     const [events, setEvents] = useState<LoggedEvent[]>([]);
-    const [latestIntent, setLatestIntent] = useState<OpportunityIdentifiedPayload | null>(null);
+    const [analyzedIntents, setAnalyzedIntents] = useState<(OpportunityIdentifiedPayload & { timestamp: number, id: string })[]>([]);
     const [latestFanOut, setLatestFanOut] = useState<OpportunityFannedOutPayload | null>(null);
     const [latestBid, setLatestBid] = useState<BidAcceptedPayload | null>(null);
     const [latestPayload, setLatestPayload] = useState<AdCpPayload | null>(null);
@@ -56,7 +57,7 @@ export const DeveloperPanel = () => {
                 // 2. Update specific sections
                 switch (eventName) {
                     case AceEvent.OPPORTUNITY_IDENTIFIED:
-                        setLatestIntent(data as OpportunityIdentifiedPayload);
+                        setAnalyzedIntents(prev => [{ ...(data as OpportunityIdentifiedPayload), timestamp: Date.now(), id: Math.random().toString(36).substring(7) }, ...prev]);
                         break;
                     case AceEvent.OPPORTUNITY_FANNED_OUT:
                         setLatestFanOut(data as OpportunityFannedOutPayload);
@@ -102,37 +103,89 @@ export const DeveloperPanel = () => {
                     </div>
                     <div
                         ref={eventContainerRef}
-                        className="bg-slate-950 rounded-lg p-3 max-h-48 overflow-y-auto border border-slate-800 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-700"
+                        className="bg-slate-950 rounded-lg p-0 max-h-48 overflow-auto border border-slate-800 scrollbar-thin scrollbar-thumb-slate-700"
                     >
                         {events.length === 0 ? (
-                            <span className="text-slate-600 italic">Waiting for events...</span>
+                            <div className="p-3"><span className="text-slate-600 italic">Waiting for events...</span></div>
                         ) : (
-                            events.map(ev => (
-                                <div key={ev.id} className="flex space-x-2">
-                                    <span className="text-slate-600 shrink-0">
-                                        [{new Date(ev.timestamp).toISOString().split('T')[1].slice(0, 8)}]
-                                    </span>
-                                    <span className="text-indigo-400 font-bold shrink-0">{ev.type}</span>
-                                    <span className="text-slate-500 truncate flex-grow">
-                                        {JSON.stringify(ev.data).substring(0, 50)}...
-                                    </span>
-                                </div>
-                            ))
+                            <table className="w-full text-left border-collapse whitespace-nowrap">
+                                <thead className="bg-slate-900 sticky top-0 z-10 border-b border-slate-800">
+                                    <tr className="text-slate-500 text-[10px] uppercase tracking-wider">
+                                        <th className="py-2 px-3 font-medium">Time</th>
+                                        <th className="py-2 px-3 font-medium">Event Type</th>
+                                        <th className="py-2 px-3 font-medium w-full hidden lg:table-cell">Payload Snippet</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {events.map(ev => (
+                                        <tr key={ev.id} className="border-b border-slate-800/50 last:border-0 hover:bg-slate-800/30 transition-colors">
+                                            <td className="py-2 px-3 align-top text-slate-500">
+                                                {new Date(ev.timestamp).toISOString().split('T')[1].slice(0, 8)}
+                                            </td>
+                                            <td className="py-2 px-3 align-top font-semibold text-indigo-400">
+                                                {ev.type}
+                                            </td>
+                                            <td className="py-2 px-3 align-top text-slate-400 min-w-[120px] max-w-[200px] hidden lg:table-cell overflow-hidden text-ellipsis">
+                                                {JSON.stringify(ev.data).substring(0, 60)}...
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         )}
                     </div>
                 </section>
 
-                {/* Section 2: Intent Identified */}
+                {/* Section 1.5: Intent Analysis Dashboard */}
                 <section>
-                    <div className="flex items-center space-x-2 mb-2 text-amber-400">
-                        <Zap className="w-3.5 h-3.5" />
-                        <h3 className="uppercase tracking-wider font-semibold">Latest Intent</h3>
+                    <div className="flex items-center space-x-2 mb-2 text-emerald-400">
+                        <Brain className="w-3.5 h-3.5" />
+                        <h3 className="uppercase tracking-wider font-semibold">Intent Analysis</h3>
                     </div>
-                    <div className="bg-slate-950 rounded-lg p-3 border border-slate-800 overflow-x-auto">
-                        {latestIntent ? (
-                            <pre className="text-emerald-400">{formatJson(latestIntent)}</pre>
+                    <div className="bg-slate-950 rounded-lg p-0 max-h-64 overflow-auto border border-slate-800 scrollbar-thin scrollbar-thumb-slate-700">
+                        {analyzedIntents.length === 0 ? (
+                            <div className="p-3"><span className="text-slate-600 italic">Waiting for analysis...</span></div>
                         ) : (
-                            <span className="text-slate-600 italic">No intent identified yet</span>
+                            <table className="w-full text-left border-collapse whitespace-nowrap">
+                                <thead className="bg-slate-900 sticky top-0 z-10 border-b border-slate-800">
+                                    <tr className="text-slate-500 text-[10px] uppercase tracking-wider">
+                                        <th className="py-2 px-3 font-medium">Time</th>
+                                        <th className="py-2 px-3 font-medium">Context</th>
+                                        <th className="py-2 px-3 font-medium">Funnel</th>
+                                        <th className="py-2 px-3 font-medium">IAB</th>
+                                        <th className="py-2 px-3 font-medium">Confidence</th>
+                                        <th className="py-2 px-3 font-medium">Evidence Quotes</th>
+                                        <th className="py-2 px-3 font-medium">Pre-Qual Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {analyzedIntents.map(intent => (
+                                        <tr key={intent.id} className="border-b border-slate-800/50 last:border-0 hover:bg-slate-800/30 transition-colors">
+                                            <td className="py-2 px-3 align-top text-slate-500">
+                                                {new Date(intent.timestamp).toISOString().split('T')[1].slice(0, 8)}
+                                            </td>
+                                            <td className="py-2 px-3 align-top text-emerald-400">
+                                                {intent.intentContext}
+                                            </td>
+                                            <td className="py-2 px-3 align-top text-amber-400">
+                                                {intent.funnelStage}
+                                            </td>
+                                            <td className="py-2 px-3 align-top text-sky-400">
+                                                {intent.iabCategory}
+                                            </td>
+                                            <td className="py-2 px-3 align-top text-amber-400 font-mono">
+                                                {intent.confidenceScore}%
+                                            </td>
+                                            <td className="py-2 px-3 align-top text-slate-400 max-w-sm overflow-hidden text-ellipsis italic">
+                                                "{intent.evidenceQuotes.join('", "')}"
+                                            </td>
+                                            <td className="py-2 px-3 align-top text-purple-400 font-mono">
+                                                {intent.qualificationScore}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         )}
                     </div>
                 </section>
@@ -143,7 +196,7 @@ export const DeveloperPanel = () => {
                         <Network className="w-3.5 h-3.5" />
                         <h3 className="uppercase tracking-wider font-semibold">Media Network Fan Out</h3>
                     </div>
-                    <div className="bg-slate-950 rounded-lg p-3 border border-slate-800 overflow-x-auto">
+                    <div className="bg-slate-950 rounded-lg p-3 border border-slate-800 overflow-auto max-h-48 scrollbar-thin scrollbar-thumb-slate-700">
                         {latestFanOut ? (
                             <pre className="text-sky-300">{formatJson(latestFanOut)}</pre>
                         ) : (
@@ -158,7 +211,7 @@ export const DeveloperPanel = () => {
                         <Gavel className="w-3.5 h-3.5" />
                         <h3 className="uppercase tracking-wider font-semibold">Auction Result</h3>
                     </div>
-                    <div className="bg-slate-950 rounded-lg p-3 border border-slate-800 overflow-x-auto">
+                    <div className="bg-slate-950 rounded-lg p-3 border border-slate-800 overflow-auto max-h-48 scrollbar-thin scrollbar-thumb-slate-700">
                         {latestBid ? (
                             <pre className="text-purple-300">{formatJson(latestBid)}</pre>
                         ) : (
@@ -173,7 +226,7 @@ export const DeveloperPanel = () => {
                         <Send className="w-3.5 h-3.5" />
                         <h3 className="uppercase tracking-wider font-semibold">Egress Payload (AdCP)</h3>
                     </div>
-                    <div className="bg-slate-950 rounded-lg p-3 border border-slate-800 overflow-x-auto">
+                    <div className="bg-slate-950 rounded-lg p-3 border border-slate-800 overflow-auto max-h-48 scrollbar-thin scrollbar-thumb-slate-700">
                         {latestPayload ? (
                             <pre className="text-rose-300">{formatJson(latestPayload)}</pre>
                         ) : (

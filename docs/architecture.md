@@ -24,7 +24,7 @@ This domain represents the "Partner AI Platform" (e.g., Perplexity, OpenAI, or a
 This is the brain of the ecosystem. It receives synchronous, unstructured input from the Client Domain and turns it into asynchronous, monetized value.
 
 ### Components
-- **The Message Control Protocol (`/api/mcp`)**: The single public API ingress for ACE. It receives chat webhooks, translates them into the asynchronous `AceEvent` system, and suspends the HTTP request while waiting for the auction to finish.
+- **The Message Control Protocol (`/api/mcp`)**: The single public API ingress for ACE. It receives chat webhooks and translates them into the asynchronous `AceEvent` system. It bridges the synchronous incoming HTTP request with the asynchronous bid resolution by tracking conversational `Session IDs` in an internal `pendingSessions` map, safely resolving the request once the auction finishes.
 - **Intent Analyzer (`analyzer.ts`)**: Currently a mocked implementation. In production, this utilizes Structured Outputs to evaluate user chat text and extract High-Intent Commercial context (e.g., "Buying Steaks"). Emits `OPPORTUNITY_IDENTIFIED`.
 - **Bid Assessor (`assessor.ts`)**: Evaluates incoming bids from the Media Network based on OpenRTB logic. Executes the timeout parameters and resolves the auction with `BID_ACCEPTED`.
 
@@ -37,8 +37,19 @@ This domain represents the exchange layer that integrates with external Demand S
 
 ### Components
 - **Event Router (`router.ts`)**: Subscribes to the internal `OPPORTUNITY_IDENTIFIED` event. Its sole job is to fan-out (broadcast) the opportunity to every registered internal connector simultaneously via `OPPORTUNITY_FANNED_OUT`.
-- **Connectors (e.g., `dummyCouponConnector.ts`)**: Adapters that map the internal ACE opportunity schema into standard HTTP requests sent over the internet to the DSP webhooks.
+- **Connectors (e.g., `dummyCouponConnector.ts`)**: Adapters that map the internal ACE opportunity schema into standard HTTP requests sent over the internet to the DSP webhooks. This layer serves as the main gateway to the **AdTech Ecosystem**, capable of natively integrating with platforms like DV360, Criteo, CitrusAds, and TTD, utilizing industry standards like OpenRTB, specialized AdCP formats, and Native Banners.
 - **Mock Partners (`/api/ace-media-net/mock-partners/`)**: Next.js API Routes pretending to be external advertising companies. They receive HTTP requests, evaluate the intent, and return a parsed JSON bid (e.g., a $1.50 coupon for Wagyu Beef).
+
+---
+
+## 4. Infrastructure Layer
+**Location:** `src/infrastructure/`
+
+This domain manages the global singletons that wire the ecosystem together.
+
+### Components
+- **Shared Event Bus (`eventBus.ts`)**: The internal NodeJS event emitter that drives the main architectural lifecycle.
+- **Structured Logger (`logger.ts`)**: A centralized logging configuration utilizing `Pino`. It dynamically routes logs based on environment configurations, writing structured JSON to a persistent file (`logs/ace.log`) while simultaneously rendering a colorized, human-readable stdout stream during local development via `pino-pretty`.
 
 ---
 

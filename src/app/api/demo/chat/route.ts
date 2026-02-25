@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logger } from '../../../../infrastructure/logger';
 import { generateText } from 'ai';
 import { chatModel } from '../../../../infrastructure/llm/provider';
 
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing message' }, { status: 400 });
         }
 
-        console.log(`[Dummy-AI-Platform] Processing message via LLM: "${message}"`);
+        logger.info(`[Dummy-AI-Platform] Processing message via LLM: "${message}"`);
 
         // Generate the text response using the Vercel AI SDK
         const { text } = await generateText({
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
         }, { status: 200 });
 
     } catch (e) {
-        console.error(`[Dummy-AI-Platform] Error generating response:`, e);
+        logger.error({ err: e }, `[Dummy-AI-Platform] Error generating response:`);
         return NextResponse.json({ error: 'Server error generating LLM response' }, { status: 500 });
     }
 }
