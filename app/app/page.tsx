@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ChatMessage, Role } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { AceSponsoredCard } from '../components/AceSponsoredCard';
+import { DeveloperPanel } from '../components/DeveloperPanel';
 import { AdCpPayload } from '../src/infrastructure/events';
 
 // Internal type for rendering mixed content in the chat stream
@@ -79,12 +80,7 @@ export default function Home() {
       }
 
       // 4. Inject the Standard AI Text Response
-      // Note: We inject the AI text *after* the card for conversational flow, 
-      // but in real life Vercel AI SDK streams this text in simultaneously.
       if (chatData.status === 'fulfilled' && chatData.value?.content) {
-        // If the DSP sent rules on how the AI should talk, we would normally
-        // inject that into the LLM system prompt before the chatPromise returns.
-        // For MVP, we just render the standard text.
         setMessages(prev => [
           ...prev,
           { type: 'text', id: uuidv4(), role: 'assistant', content: chatData.value.content }
@@ -101,60 +97,67 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 font-sans text-slate-900">
+    <div className="flex flex-col lg:flex-row h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
 
-      {/* Header */}
-      <header className="flex-shrink-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-center space-x-3 z-10 sticky top-0">
-        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20">
-          <ShoppingBag className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-800">Yalor Groceries</h1>
-          <p className="text-xs font-medium text-slate-500 flex items-center space-x-1 uppercase tracking-wider">
-            <span>Powered by ACE AI</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-1.5 animate-pulse"></span>
-          </p>
-        </div>
-      </header>
+      {/* Left Column: Chat UI */}
+      <div className="flex flex-col h-full w-full lg:w-2/3 border-r border-slate-200 shadow-sm z-10">
 
-      {/* Main Chat Area */}
-      <main className="flex-grow overflow-y-auto w-full flex flex-col items-center px-4 py-8 space-y-2">
-        {messages.map((block) => {
-          if (block.type === 'text') {
-            return <ChatMessage key={block.id} role={block.role} content={block.content} />;
-          }
-          if (block.type === 'adcp_card') {
-            return <AceSponsoredCard key={block.id} payload={block.payload} />;
-          }
-          return null;
-        })}
-
-        {isLoading && (
-          <div className="flex w-full mt-4 space-x-3 max-w-2xl mx-auto justify-start items-center ml-12 opacity-60">
-            <div className="flex space-x-1.5 ml-2">
-              <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-              <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-              <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
-            </div>
+        {/* Header */}
+        <header className="flex-shrink-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-center space-x-3 z-10">
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20">
+            <ShoppingBag className="w-5 h-5 text-white" />
           </div>
-        )}
-        <div ref={bottomRef} className="h-4" />
-      </main>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-slate-800">Yalor Groceries</h1>
+            <p className="text-xs font-medium text-slate-500 flex items-center space-x-1 uppercase tracking-wider">
+              <span>Powered by ACE AI</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-1.5 animate-pulse"></span>
+            </p>
+          </div>
+        </header>
 
-      {/* Input Area */}
-      <footer className="flex-shrink-0 bg-white border-t border-slate-200 p-4 pb-6 sm:pb-8 relative z-10 w-full shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
-        <div className="max-w-3xl mx-auto flex flex-col items-center">
-          <ChatInput
-            value={input}
-            onChange={setInput}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
-          <p className="text-[10px] text-slate-400 mt-2 tracking-wide uppercase font-medium hidden sm:block">
-            Testing ACE Event-Driven Egress Payload • Pre-Qualification Gate • Dynamic Webhooks
-          </p>
-        </div>
-      </footer>
+        {/* Main Chat Area */}
+        <main className="flex-grow overflow-y-auto w-full flex flex-col items-center px-4 py-8 space-y-2">
+          {messages.map((block) => {
+            if (block.type === 'text') {
+              return <ChatMessage key={block.id} role={block.role} content={block.content} />;
+            }
+            if (block.type === 'adcp_card') {
+              return <AceSponsoredCard key={block.id} payload={block.payload} />;
+            }
+            return null;
+          })}
+
+          {isLoading && (
+            <div className="flex w-full mt-4 space-x-3 max-w-2xl mx-auto justify-start items-center ml-12 opacity-60">
+              <div className="flex space-x-1.5 ml-2">
+                <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} className="h-4" />
+        </main>
+
+        {/* Input Area */}
+        <footer className="flex-shrink-0 bg-white border-t border-slate-200 p-4 pb-6 relative z-10 w-full">
+          <div className="max-w-3xl mx-auto flex flex-col items-center">
+            <ChatInput
+              value={input}
+              onChange={setInput}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+            />
+          </div>
+        </footer>
+      </div>
+
+      {/* Right Column: Developer SSE Panel */}
+      <div className="hidden lg:flex flex-col h-full w-1/3 min-w-[350px]">
+        <DeveloperPanel />
+      </div>
+
     </div>
   );
 }

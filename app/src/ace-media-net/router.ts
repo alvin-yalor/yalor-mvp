@@ -31,6 +31,12 @@ export class MediaNetworkRouter {
 
         console.log(`[MediaNetworkRouter] Fanning out to ${connectors.length} connectors...`);
 
+        eventBus.safeEmit(AceEvent.OPPORTUNITY_FANNED_OUT, {
+            sessionId: opportunity.sessionId,
+            opportunityId: opportunity.opportunityId,
+            connectorCount: connectors.length
+        });
+
         // Wait for all to resolve or reject, but enforce a hard timeout in the connectors
         await Promise.allSettled(connectors);
     }

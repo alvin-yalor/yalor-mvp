@@ -5,6 +5,9 @@ export enum AceEvent {
   // Internal ACE Core -> ACE Media Network
   OPPORTUNITY_IDENTIFIED = 'OPPORTUNITY_IDENTIFIED',
 
+  // ACE Media Network Router -> Internal
+  OPPORTUNITY_FANNED_OUT = 'OPPORTUNITY_FANNED_OUT',
+
   // ACE Media Network -> ACE Core
   BID_RECEIVED = 'BID_RECEIVED',
 
@@ -49,6 +52,12 @@ export interface OpportunityIdentifiedPayload {
   funnelStage: 'UPPER' | 'MID' | 'LOWER';
   userProfileSnapshot: UserProfile; // Passed to scoring gates
   qualificationScore: number;       // The pre-qualification score
+}
+
+export interface OpportunityFannedOutPayload {
+  sessionId: string;
+  opportunityId: string;
+  connectorCount: number;
 }
 
 // The raw OpenRTB 'adm' payload received from a Partner

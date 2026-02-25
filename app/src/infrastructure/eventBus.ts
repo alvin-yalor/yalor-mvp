@@ -15,5 +15,12 @@ class AceEventBus extends EventEmitter {
     }
 }
 
-// Export a singleton instance
-export const eventBus = new AceEventBus();
+declare global {
+    var _eventBus: AceEventBus | undefined;
+}
+
+export const eventBus = global._eventBus || new AceEventBus();
+
+if (process.env.NODE_ENV !== 'production') {
+    global._eventBus = eventBus;
+}

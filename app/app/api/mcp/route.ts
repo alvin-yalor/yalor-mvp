@@ -52,6 +52,9 @@ eventBus.safeOn(AceEvent.BID_ACCEPTED, (acceptedBid: BidAcceptedPayload) => {
             }
         };
 
+        // Emit the final payload to the event bus for logging/SSE
+        eventBus.safeEmit(AceEvent.MEDIA_PAYLOAD_READY, adcpPayload);
+
         // Resolve the HTTP request
         resolver(adcpPayload);
         pendingSessions.delete(dynamicSessionId);
