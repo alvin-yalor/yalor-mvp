@@ -3,10 +3,12 @@ export enum AceEvent {
   USER_INPUT_RECEIVED = 'USER_INPUT_RECEIVED',
 
   // Core NLP -> Internal
-  INTENT_ANALYZED = 'INTENT_ANALYZED',
+  INTENT_DETECTED = 'INTENT_DETECTED',
+  EXTRACTED_PROFILE_TRAITS = 'EXTRACTED_PROFILE_TRAITS',
 
-  // Internal ACE Core -> ACE Media Network
+  // Assessor -> Internal / Media Network
   OPPORTUNITY_IDENTIFIED = 'OPPORTUNITY_IDENTIFIED',
+  OPPORTUNITY_OBSOLETED = 'OPPORTUNITY_OBSOLETED',
 
   // ACE Media Network Router -> Internal
   OPPORTUNITY_FANNED_OUT = 'OPPORTUNITY_FANNED_OUT',
@@ -32,12 +34,24 @@ export interface UserInputPayload {
   timestamp: number;
 }
 
-export interface IntentAnalyzedPayload {
+export interface ExtractedProfileTraitsPayload {
   sessionId: string;
-  hasCommercialIntent: boolean;
-  confidenceScore: number;
-  iabCategory?: string;
+  profileDelta: Partial<UserProfile['inferredData']>;
+  confidenceScores: Record<string, number>;
+}
+
+export interface IntentItem {
+  intentType: 'DIRECT' | 'LATENT';
+  timing: 'IMMEDIATE' | 'DEFERRED';
+  topicContext: string;
+  evidenceQuotes: string[];
   reasoning: string;
+}
+
+export interface IntentDetectedPayload {
+  sessionId: string;
+  activeIntents: IntentItem[];
+  confidenceScore: number;
 }
 
 // ==========================================
@@ -49,8 +63,12 @@ export interface UserProfile {
   inferredData: {
     location?: string;
     gender?: string;
-    budgetThreshold?: 'LOW' | 'MEDIUM' | 'HIGH';
+    spendingPower?: 'LOW' | 'MEDIUM' | 'HIGH';
+    maritalStatus?: string;
     interests: string[];
+    hobbies: string[];
+    lifeEvents: string[];
+    householdContext: string[];
   };
   // How confident are we in these traits? (0.0 to 1.0)
   confidenceScores: Record<string, number>;
@@ -62,10 +80,14 @@ export interface OpportunityIdentifiedPayload {
   intentContext: string; // e.g., "Looking for running shoes"
   funnelStage: 'UPPER' | 'MID' | 'LOWER';
   iabCategory: string; // e.g., "IAB8-18 (Food & Drink)"
-  confidenceScore: number; // 0-100 rating from the Analyzer LLM
-  evidenceQuotes: string[]; // Strict quotes from the user message justifying the classification
-  userProfileSnapshot: UserProfile; // Passed to scoring gates
-  qualificationScore: number;       // The pre-qualification score
+  opportunityScore: number; // Synthesis of Intent + Profile (0-100)
+  contextMap: Record<string, any>; // Supporting data for the Media Network (e.g., location, budget)
+}
+
+export interface OpportunityObsoletedPayload {
+  sessionId: string;
+  opportunityId: string;
+  reason: string;
 }
 
 export interface OpportunityFannedOutPayload {

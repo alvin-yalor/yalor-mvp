@@ -83,12 +83,11 @@ export async function POST(req: Request) {
         // If no auction happens, we resolve with `null` after a short timeout.
 
         const aceEgressPromise = new Promise<AdCpPayload | null>((resolve) => {
-            // Set a 500ms timeout. If ACE Core doesn't finish the auction by then,
-            // we assume no opportunity was found or DSPs timed out.
+            // Set a 8000ms timeout to allow LLM intent extraction to finish.
             const timer = setTimeout(() => {
                 pendingSessions.delete(sessionId);
                 resolve(null);
-            }, 500);
+            }, 8000);
 
             // Store the resolver in our Map
             pendingSessions.set(sessionId, (payload: AdCpPayload) => {

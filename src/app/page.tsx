@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Briefcase } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatMessage, Role } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
@@ -15,16 +15,25 @@ type UIBlock =
   | { type: 'adcp_card'; id: string; payload: AdCpPayload };
 
 export default function Home() {
+  const getWelcomeMessage = (type: 'groceries' | 'butler'): UIBlock => ({
+    type: 'text',
+    id: 'welcome-msg',
+    role: 'assistant',
+    content: type === 'groceries'
+      ? 'Hi! I am your Yalor Grocery Assistant. How can I help you plan your meals or shopping today?'
+      : 'Hello. I am your Executive Butler. How may I assist you today?'
+  });
+
+  const [botType, setBotType] = useState<'groceries' | 'butler'>('groceries');
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState<UIBlock[]>([
-    {
-      type: 'text',
-      id: 'welcome-msg',
-      role: 'assistant',
-      content: 'Hi! I am your Yalor Grocery Assistant. How can I help you plan your meals or shopping today?'
-    }
-  ]);
+  const [messages, setMessages] = useState<UIBlock[]>([getWelcomeMessage('groceries')]);
+
+  const handleBotChange = (type: 'groceries' | 'butler') => {
+    setBotType(type);
+    setMessages([getWelcomeMessage(type)]);
+    setInput('');
+  };
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const sessionId = useRef('');
@@ -55,7 +64,8 @@ export default function Home() {
     try {
       // 2. Fire concurrent requests to both the AI Provider AND the ACE MCP
       // This is the core magic behind Gen AI + Commerce without latency bottlenecks.
-      const chatPromise = fetch('/api/demo/chat', {
+      const endpoint = botType === 'groceries' ? '/api/demo/chat' : '/api/demo/chat-butler';
+      const chatPromise = fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userText })
@@ -103,17 +113,45 @@ export default function Home() {
       <div className="flex flex-col h-full w-full lg:w-2/3 border-r border-slate-200 shadow-sm z-10">
 
         {/* Header */}
-        <header className="flex-shrink-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-center space-x-3 z-10">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20">
-            <ShoppingBag className="w-5 h-5 text-white" />
+        <header className="flex-shrink-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10 w-full relative">
+          {/* Top-left Toggle */}
+          <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-lg z-20">
+            <button
+              onClick={() => handleBotChange('groceries')}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${botType === 'groceries' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              Groceries
+            </button>
+            <button
+              onClick={() => handleBotChange('butler')}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${botType === 'butler' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              Butler
+            </button>
           </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-800">Yalor Groceries</h1>
-            <p className="text-xs font-medium text-slate-500 flex items-center space-x-1 uppercase tracking-wider">
-              <span>Powered by ACE AI</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-1.5 animate-pulse"></span>
-            </p>
+
+          {/* Center Title */}
+          <div className="flex items-center space-x-3 absolute left-1/2 transform -translate-x-1/2">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md ${botType === 'groceries' ? 'bg-indigo-600 shadow-indigo-500/20' : 'bg-slate-800 shadow-slate-800/20'}`}>
+              {botType === 'groceries' ? (
+                <ShoppingBag className="w-5 h-5 text-white" />
+              ) : (
+                <Briefcase className="w-5 h-5 text-white" />
+              )}
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight text-slate-800">
+                {botType === 'groceries' ? 'Yalor Groceries' : 'Yalor Butler'}
+              </h1>
+              <p className="text-xs font-medium text-slate-500 flex items-center space-x-1 uppercase tracking-wider">
+                <span>Powered by ACE AI</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-1.5 animate-pulse"></span>
+              </p>
+            </div>
           </div>
+
+          {/* Right Placeholder for balance */}
+          <div className="w-[150px]"></div>
         </header>
 
         {/* Main Chat Area */}

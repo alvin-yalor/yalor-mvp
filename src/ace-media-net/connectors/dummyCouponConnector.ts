@@ -1,6 +1,7 @@
 import { logger } from '../../infrastructure/logger';
 import { eventBus } from '../../infrastructure/eventBus';
 import { AceEvent, OpportunityIdentifiedPayload, BidReceivedPayload, OpenRtbNativeAd } from '../../infrastructure/events';
+import { openRtbMapper } from '../../adtech-connectors/openRtbMapper';
 
 /**
  * An adapter that formats an ACE Opportunity into an HTTP request,
@@ -61,18 +62,12 @@ export class DummyCouponConnector {
      */
     private async mockFetchExternalPartner(opportunity: OpportunityIdentifiedPayload) {
         try {
+            const openRtbBidRequest = openRtbMapper.mapToBidRequest(opportunity);
+
             const res = await fetch(this.WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    opportunityId: opportunity.opportunityId,
-                    intentContext: opportunity.intentContext,
-                    funnelStage: opportunity.funnelStage,
-                    iabCategory: opportunity.iabCategory,
-                    confidenceScore: opportunity.confidenceScore,
-                    evidence: opportunity.evidenceQuotes,
-                    userProfile: opportunity.userProfileSnapshot
-                })
+                body: JSON.stringify(openRtbBidRequest)
             });
 
             if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);

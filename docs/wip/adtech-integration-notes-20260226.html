@@ -1,0 +1,713 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #6d6d6d; -webkit-text-stroke: #6d6d6d; min-height: 14.0px}
+    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Courier; -webkit-text-stroke: #000000}
+    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p10 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    li.li1 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    li.li5 {margin: 0.0px 0.0px 12.0px 0.0px; font: 13.0px Courier; -webkit-text-stroke: #000000}
+    li.li10 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+    span.s2 {font: 24.0px 'Apple Color Emoji'; font-kerning: none}
+    span.s3 {-webkit-text-stroke: 0px #000000}
+    span.s4 {font: 13.0px Courier; font-kerning: none}
+    span.s5 {font: 12.0px 'Apple Color Emoji'; font-kerning: none}
+    span.s6 {font: 18.0px 'Hiragino Mincho ProN'; font-kerning: none}
+    td.td1 {width: 116.0px; margin: 0.5px 0.5px 0.5px 0.5px; padding: 1.0px 1.0px 1.0px 1.0px}
+    td.td2 {width: 127.0px; margin: 0.5px 0.5px 0.5px 0.5px; padding: 1.0px 1.0px 1.0px 1.0px}
+    ol.ol1 {list-style-type: decimal}
+    ul.ul1 {list-style-type: disc}
+    ul.ul2 {list-style-type: circle}
+  </style>
+</head>
+<body>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">How does ACE become a signal layer that AdTech platforms can ingest and activate on?</span></blockquote>
+<p class="p1"><span class="s1">That’s a different architectural problem.</span></p>
+<p class="p1"><span class="s1">Let’s break this cleanly.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">1️⃣</span><span class="s1"><b> First Principle: ACE Is Not a DSP</b></span></h1>
+<p class="p1"><span class="s1">ACE should not try to behave like:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">a bidder</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">a measurement vendor</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">or a DMP clone</span></li>
+</ul>
+<p class="p1"><span class="s1">ACE is a <b>real-time intent signal and audience intelligence layer</b> built from AI conversations.</span></p>
+<p class="p1"><span class="s1">So the question becomes:</span></p>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">How do modern AdTech platforms ingest 3rd-party signals?</span></blockquote>
+<p class="p1"><span class="s1">There are <b>four dominant integration patterns</b> in AdTech today.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">2️⃣</span><span class="s1"><b> The 4 Integration Models That Matter</b></span></h1>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>A) RTB-Level Signal Injection (OpenRTB Extensions)</b></span></h2>
+<p class="p1"><span class="s1">Used by:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">The Trade Desk</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Google Display &amp; Video 360</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Criteo</span></li>
+</ul>
+<p class="p1"><span class="s1"><b>How it works:</b><b></b></span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">ACE enriches the bid request with:</span></li>
+  <ul class="ul2">
+    <li class="li5"><span class="s3"></span><span class="s1">user.ext</span></li>
+    <li class="li5"><span class="s3"></span><span class="s1">site.ext</span></li>
+    <li class="li5"><span class="s3"></span><span class="s1">data.segment</span></li>
+  </ul>
+  <li class="li1"><span class="s3"></span><span class="s1">You define a custom </span><span class="s4">ace.ext</span><span class="s1"> object</span></li>
+</ul>
+<p class="p1"><span class="s1">Example:</span></p>
+<p class="p6"><span class="s1">"user": {</span></p>
+<p class="p6"><span class="s1"><span class="Apple-converted-space">  </span>"ext": {</span></p>
+<p class="p6"><span class="s1"><span class="Apple-converted-space">    </span>"ace": {</span></p>
+<p class="p6"><span class="s1"><span class="Apple-converted-space">      </span>"funnel": "mid",</span></p>
+<p class="p6"><span class="s1"><span class="Apple-converted-space">      </span>"iab": "IAB3-1",</span></p>
+<p class="p6"><span class="s1"><span class="Apple-converted-space">      </span>"intent_score": 0.82,</span></p>
+<p class="p6"><span class="s1"><span class="Apple-converted-space">      </span>"budget_bucket": "high"</span></p>
+<p class="p6"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p6"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p6"><span class="s1">}</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Pros</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Real-time</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">High performance</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Plug-compatible with DSPs</span></li>
+</ul>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Cons</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Requires exchange / SSP cooperation</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Needs standardization</span></li>
+</ul>
+<p class="p1"><span class="s5">👉</span><span class="s1"> This works best if ACE becomes a recognized “signal provider.”</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>B) Audience Sync / Segment Push (DMP-style)</b></span></h2>
+<p class="p1"><span class="s1">Used heavily by:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">CitrusAd</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Criteo</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">The Trade Desk</span></li>
+</ul>
+<p class="p1"><span class="s1">Here ACE creates:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Audience segments:</span></li>
+  <ul class="ul2">
+    <li class="li5"><span class="s3"></span><span class="s1">ACE_AUTO_INTENDERS_HIGH</span></li>
+    <li class="li5"><span class="s3"></span><span class="s1">ACE_TRAVEL_RESEARCHERS_UPPER_FUNNEL</span></li>
+  </ul>
+  <li class="li1"><span class="s3"></span><span class="s1">Pushes them via:</span></li>
+  <ul class="ul2">
+    <li class="li1"><span class="s3"></span><span class="s1">S3 bucket feed</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">SFTP</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">API audience creation endpoint</span></li>
+  </ul>
+</ul>
+<p class="p1"><span class="s1">This is extremely digestible for agencies.</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Pros</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Very easy to adopt</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Doesn’t require protocol change</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Commercially understandable</span></li>
+</ul>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Cons</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Not real-time</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Less differentiated</span></li>
+</ul>
+<p class="p1"><span class="s5">👉</span><span class="s1"> This is likely your MVP integration.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>C) Clean Room / Data Collaboration Layer</b></span></h2>
+<p class="p1"><span class="s1">Used by:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Google (Ads Data Hub)</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Amazon (AMC)</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Retail media networks</span></li>
+</ul>
+<p class="p1"><span class="s1">ACE pushes:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Aggregated intent cohorts</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Session-level pseudo IDs</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Modeled budget tiers</span></li>
+</ul>
+<p class="p1"><span class="s1">This is privacy-forward and regulator-friendly.</span></p>
+<p class="p1"><span class="s1">Given your EU AI Act alignment strategy, this matters long-term.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>D) API-Based Signal Marketplace (Emerging Pattern)</b></span></h2>
+<p class="p1"><span class="s1">This is where things get interesting.</span></p>
+<p class="p1"><span class="s1">Instead of pushing segments, ACE exposes:</span></p>
+<p class="p6"><span class="s1">POST /intent/signal</span></p>
+<p class="p6"><span class="s1">GET /session/profile</span></p>
+<p class="p6"><span class="s1">GET /cohort/travel/high-budget</span></p>
+<p class="p1"><span class="s1">DSPs query ACE at bid time or pre-bid.</span></p>
+<p class="p1"><span class="s1">This turns ACE into:</span></p>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">A commerce intelligence API for the agentic web.</span></blockquote>
+<p class="p1"><span class="s1">This is closer to your vision.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">3️⃣</span><span class="s1"><b> The Real Question: What Is ACE Sending?</b></span></h1>
+<p class="p1"><span class="s1">Your current schema:</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Opportunity</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Funnel: upper/mid/lower</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">IAB category</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Intent description</span></li>
+</ul>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Audience</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Gender</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Age</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Budget</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Location</span></li>
+</ul>
+<p class="p1"><span class="s5">⚠️</span><span class="s1"> Problem:<br>
+DSPs don’t buy “intent descriptions.”</span></p>
+<p class="p1"><span class="s1">They buy:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Scores</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Segments</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Bid modifiers</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Contextual categories</span></li>
+</ul>
+<p class="p1"><span class="s1">So ACE must translate:</span></p>
+<table cellspacing="0" cellpadding="0">
+  <tbody>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p8"><span class="s1"><b>ACE Internal Concept</b></span></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p8"><span class="s1"><b>DSP-Compatible Output</b></span></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p9"><span class="s1">Funnel stage</span></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p9"><span class="s1">Propensity score (0–1)</span></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p9"><span class="s1">IAB tier</span></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p9"><span class="s1">IAB 2.2 taxonomy code</span></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p9"><span class="s1">Budget assessment</span></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p9"><span class="s1">Spend index percentile</span></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p9"><span class="s1">Intent description</span></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p9"><span class="s1">Keyword cluster ID</span></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p9"><span class="s1">Location</span></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p9"><span class="s1">Geo-hash or DMA code</span></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p class="p1"><span class="s1">You need a <b>Signal Normalization Layer</b>.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">4️⃣</span><span class="s1"><b> Recommended Architecture for ACE</b></span></h1>
+<p class="p1"><span class="s1">Given Yalor’s ambition, here’s the strategic approach:</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Phase 1 — Segment Provider (Commercial Entry Point)</b></span></h2>
+<p class="p1"><span class="s1">ACE generates:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Real-time session classification</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Nightly audience segment exports</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Mapped to:</span></li>
+  <ul class="ul2">
+    <li class="li1"><span class="s3"></span><span class="s1">IAB 2.2</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Geo codes</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Budget index</span></li>
+  </ul>
+</ul>
+<p class="p1"><span class="s1">Deliver via:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">API</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">S3 feed</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Agency audience creation endpoint</span></li>
+</ul>
+<p class="p1"><span class="s1">This gets you revenue fastest.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Phase 2 — Real-Time Bid Signal</b></span></h2>
+<p class="p1"><span class="s1">Embed ACE as:</span></p>
+<p class="p6"><span class="s1">OpenRTB ext provider</span></p>
+<p class="p1"><span class="s1">Define:</span></p>
+<p class="p6"><span class="s1">imp.ext.ace</span></p>
+<p class="p6"><span class="s1">user.ext.ace</span></p>
+<p class="p1"><span class="s1">Publish an “ACE Signal Spec v1.0”.</span></p>
+<p class="p1"><span class="s1">Position ACE as:</span></p>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">Commerce Intent Signal Layer for AI Conversations</span></blockquote>
+<p class="p1"><span class="s1">Now DSPs can:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Apply bid multipliers</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Prioritize creative</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Activate dynamic budgets</span></li>
+</ul>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Phase 3 — ACE Signal Exchange</b></span></h2>
+<p class="p1"><span class="s1">Long-term vision:</span></p>
+<p class="p1"><span class="s1">DSPs subscribe to:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Real-time intent streams</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Category-level opportunity feeds</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Geo-intent heatmaps</span></li>
+</ul>
+<p class="p1"><span class="s1">This becomes the <b>agentic commerce signal graph</b>.</span></p>
+<p class="p1"><span class="s1">This is where ACE becomes infrastructure.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">5️⃣</span><span class="s1"><b> Important: Regulatory &amp; Platform Constraints</b></span></h1>
+<p class="p1"><span class="s1">You are sending:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Gender</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Age</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Budget</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Location</span></li>
+</ul>
+<p class="p1"><span class="s5">⚠️</span><span class="s1"> These may qualify as inferred personal data.</span></p>
+<p class="p1"><span class="s1">You must:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Use probabilistic buckets (18–24, 25–34)</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Use non-sensitive IAB codes</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Avoid special category inference</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Document explainability</span></li>
+</ul>
+<p class="p1"><span class="s1">This is actually a strategic advantage for ACE if done correctly.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">6️⃣</span><span class="s1"><b> What I Would Do If I Were You</b></span></h1>
+<p class="p1"><span class="s1">Given your current MVP stage:</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Build:</b></span></h3>
+<ol class="ol1">
+  <li class="li1"><span class="s3"></span><span class="s1">Intent classification engine (you’re already doing this)</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Signal Normalization Layer</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Audience Segment Export API</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">OpenRTB </span><span class="s4">ext.ace</span><span class="s1"> schema draft</span></li>
+</ol>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Do NOT:</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Try to integrate directly with every DSP yet</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Try to build custom pipes per platform</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Overfit to one ecosystem</span></li>
+</ul>
+<p class="p1"><span class="s1">Instead:</span></p>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">Standardize ACE’s output first.</span></blockquote>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">7️⃣</span><span class="s1"><b> Strategic Positioning</b></span></h1>
+<p class="p1"><span class="s1">ACE is not:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">A DSP</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">A DMP</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">A CDP</span></li>
+</ul>
+<p class="p1"><span class="s1">ACE is:</span></p>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">The commerce intent layer for AI-native interactions.</span></blockquote>
+<p class="p1"><span class="s1">That framing determines your integration strategy.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">If you want, next we can:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Design the <b>ACE Signal Spec v1.0</b><b></b></span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Or map exact ingestion pathways for:</span></li>
+  <ul class="ul2">
+    <li class="li1"><span class="s3"></span><span class="s1">The Trade Desk</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Google Display &amp; Video 360</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Criteo</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">CitrusAd</span></li>
+  </ul>
+</ul>
+<p class="p1"><span class="s1">Given your ambition for ACE as protocol-like infrastructure, this integration layer is arguably more important than the UI.</span></p>
+<p class="p1"><span class="s1">—</span></p>
+<ol class="ol1">
+  <li class="li10"><span class="s1"></span><br></li>
+</ol>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">1️⃣</span><span class="s1"><b> What It Actually Means to Be a “Recognized Signal Provider”</b></span></h1>
+<p class="p1"><span class="s1">In practice, a recognized signal provider is one of three things in AdTech:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">A data provider (e.g., contextual, audience, intent)</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">A pre-bid signal vendor</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">A certified partner inside DSP ecosystems</span></li>
+</ul>
+<p class="p1"><span class="s1">Companies that achieved this path include:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Oracle Advertising</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">IAS</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">DoubleVerify</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Grapeshot</span></li>
+</ul>
+<p class="p1"><span class="s1">They are not SSPs.<br>
+They are signal layers integrated into buying workflows.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">2️⃣</span><span class="s1"><b> The Real Pathway for ACE</b></span></h1>
+<p class="p1"><span class="s1">There is a very clear industry playbook.</span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Phase A — Become a Segment Provider (Easiest Entry)</b></span></h2>
+<p class="p1"><span class="s1">You integrate via:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">DSP audience ingestion APIs</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Retail media data onboarding</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Agency data marketplaces</span></li>
+</ul>
+<p class="p1"><span class="s1">For example:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">The Trade Desk has data marketplace onboarding</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Google Display &amp; Video 360 supports audience lists and partner data</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Criteo supports external audience imports</span></li>
+</ul>
+<p class="p1"><span class="s1">You:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Publish ACE_AUTO_HIGH_INTENT</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Publish ACE_TRAVEL_MID_FUNNEL</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Provide methodology + documentation</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Show performance lift</span></li>
+</ul>
+<p class="p1"><span class="s1">At this stage, you are a <b>data partner</b>.</span></p>
+<p class="p1"><span class="s1">This is commercially digestible.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Phase B — Get Certified as a Pre-Bid Signal Vendor</b></span></h2>
+<p class="p1"><span class="s1">This is more powerful.</span></p>
+<p class="p1"><span class="s1">You:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Define an ACE Signal Spec</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Provide score-based outputs</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Work with 1–2 DSPs for beta integration</span></li>
+</ul>
+<p class="p1"><span class="s1">Example structure:</span></p>
+<p class="p6"><span class="s1">ace.intent_score = 0.82</span></p>
+<p class="p6"><span class="s1">ace.funnel_stage = 2</span></p>
+<p class="p6"><span class="s1">ace.category = IAB3-1</span></p>
+<p class="p6"><span class="s1">ace.budget_index = 74</span></p>
+<p class="p1"><span class="s1">DSP applies:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Bid multiplier</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Creative selection</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Budget allocation</span></li>
+</ul>
+<p class="p1"><span class="s1">Now ACE becomes a <b>bid modifier signal layer</b>.</span></p>
+<p class="p1"><span class="s1">This is where differentiation happens.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Phase C — Industry Standardization</b></span></h2>
+<p class="p1"><span class="s1">To be truly “recognized,” you must:</span></p>
+<ol class="ol1">
+  <li class="li1"><span class="s3"></span><span class="s1">Publish a spec (like Prebid modules do)</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Present at IAB Tech Lab</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Align taxonomy to IAB 2.2</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Demonstrate incrementality studies</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Produce agency case studies</span></li>
+</ol>
+<p class="p1"><span class="s1">Signal providers win on:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Performance lift</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Transparency</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Scalability</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Compliance posture</span></li>
+</ul>
+<p class="p1"><span class="s1">Given your EU-forward compliance stance, that’s a strength.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">3️⃣</span><span class="s1"><b> Now the Critical Question</b></span></h1>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>If ACE egresses through OpenRTB, is it an SSP?</b></span></h2>
+<p class="p1"><span class="s1">Short answer:</span></p>
+<p class="p1"><span class="s1"><b>No — not automatically.</b><b></b></span></p>
+<p class="p1"><span class="s1">Long answer:</span></p>
+<p class="p1"><span class="s1">OpenRTB is just a transport protocol.</span></p>
+<p class="p1"><span class="s1">An SSP does:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Publisher inventory aggregation</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Auction management</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Floor pricing</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Yield optimization</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Supply curation</span></li>
+</ul>
+<p class="p1"><span class="s1">ACE does:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Signal enrichment</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Intent modeling</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Audience inference</span></li>
+</ul>
+<p class="p1"><span class="s1">That is fundamentally different.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>When Would ACE Become an SSP?</b></span></h1>
+<p class="p1"><span class="s1">You become an SSP if:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">You control inventory</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">You run auctions</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">You send bid requests to DSPs</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">You collect clearing prices</span></li>
+</ul>
+<p class="p1"><span class="s1">If ACE simply attaches:</span></p>
+<p class="p6"><span class="s1">imp.ext.ace</span></p>
+<p class="p6"><span class="s1">user.ext.ace</span></p>
+<p class="p1"><span class="s1">to an existing bidstream via a partner SSP…</span></p>
+<p class="p1"><span class="s1">Then ACE is a <b>signal provider</b>, not a supply platform.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Important Distinction</b></span></h1>
+<p class="p1"><span class="s1">There are 3 OpenRTB integration positions:</span></p>
+<ol class="ol1">
+  <li class="li1"><span class="s3"></span><span class="s1">SSP (originates bid request)</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Exchange</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Signal enrichment layer (ext modifier)</span></li>
+</ol>
+<p class="p1"><span class="s1">ACE should aim for #3.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Architecturally Clean Model</b></span></h1>
+<p class="p1"><span class="s1">ACE should not:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Originate auctions</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Set CPMs</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Compete with SSPs</span></li>
+</ul>
+<p class="p1"><span class="s1">ACE should:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Sit upstream in AI conversation</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Generate intent signals</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Attach signals at activation layer</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Be inventory-agnostic</span></li>
+</ul>
+<p class="p1"><span class="s1">That preserves neutrality — which aligns with your protocol-like positioning.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">4️⃣</span><span class="s1"><b> The Real Strategic Question for ACE</b></span></h1>
+<p class="p1"><span class="s1">Do you want to be:</span></p>
+<p class="p1"><span class="s1">A) A monetization layer<br>
+B) A signal intelligence layer<br>
+C) A supply owner</span></p>
+<p class="p1"><span class="s1">Given Yalor’s positioning, B is the cleanest.</span></p>
+<p class="p1"><span class="s1">Once you become supply, you lose neutrality.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">5️⃣</span><span class="s1"><b> The Smart Entry Strategy for ACE</b></span></h1>
+<p class="p1"><span class="s1">Given where you are:</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Step 1</b></span></h3>
+<p class="p1"><span class="s1">Build normalized signal output (score-based, not descriptive).</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Step 2</b></span></h3>
+<p class="p1"><span class="s1">Export segments to 1 DSP (low friction).</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Step 3</b></span></h3>
+<p class="p1"><span class="s1">Run incrementality study with agency.</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Step 4</b></span></h3>
+<p class="p1"><span class="s1">Publish ACE Signal Spec.</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Step 5</b></span></h3>
+<p class="p1"><span class="s1">Integrate as pre-bid ext provider.</span></p>
+<p class="p1"><span class="s1">Only after that do you consider deeper RTB-level embedding.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">6️⃣</span><span class="s1"><b> A Hard Truth</b></span></h1>
+<p class="p1"><span class="s1">Recognition doesn’t come from protocol compliance.</span></p>
+<p class="p1"><span class="s1">It comes from:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Performance lift</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Agency adoption</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">DSP commercial alignment</span></li>
+</ul>
+<p class="p1"><span class="s1">Without measured lift, no one cares how elegant your schema is.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">If you want, next we can:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Design the ACE Signal Spec in a way DSPs would actually approve</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Or map out the commercial + partnership roadmap (who to approach first, and why)</span></li>
+</ul>
+<p class="p1"><span class="s1">Given your ambition for ACE to be infrastructure-level, the partnership roadmap is probably the more strategic conversation.</span></p>
+<p class="p10"><span class="s1"></span><br></p>
+<p class="p10"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">—</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">1️⃣</span><span class="s1"><b> There Are Actually Two Distinct ACE Functions</b></span></h1>
+<p class="p1"><span class="s1">You’re mixing two activation layers:</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>A) External AdTech Activation</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Build segments</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Push to DSPs</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Influence bids</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Not necessarily real-time per conversation</span></li>
+</ul>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>B) In-Conversation Monetization</b></span></h3>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Detect intent</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Query media sources</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Inject relevant content</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Happens within the AI chat session</span></li>
+</ul>
+<p class="p1"><span class="s1">These are different products.</span></p>
+<p class="p1"><span class="s1">If you collapse them into one integration pathway, you’ll limit ACE.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">2️⃣</span><span class="s1"><b> The Key Insight</b></span></h1>
+<p class="p1"><span class="s1">ACE does <b>not</b> have to choose between:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Real-time conversational monetization<br>
+AND</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">AdTech ecosystem signal provider</span></li>
+</ul>
+<p class="p1"><span class="s1">It can — and probably should — do both.</span></p>
+<p class="p1"><span class="s1">But they are separate pipes.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">3️⃣</span><span class="s1"><b> Why Segment Export ≠ Real-Time Injection</b></span></h1>
+<p class="p1"><span class="s1">When I said “not real-time,” that applies to:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Batch segment exports</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Audience sync</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Marketplace onboarding</span></li>
+</ul>
+<p class="p1"><span class="s1">That does not affect:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Real-time intent scoring</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Real-time content query</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Real-time AI-native ad response</span></li>
+</ul>
+<p class="p1"><span class="s1">Those can remain fully live.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">4️⃣</span><span class="s1"><b> Two Activation Architectures</b></span></h1>
+<p class="p1"><span class="s1">Let’s lay them side by side.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s6"><b>🅰</b></span><span class="s1"><b> ACE as Real-Time Conversational Broker (AI-Native Flow)</b></span></h2>
+<p class="p1"><span class="s1">User says:</span></p>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">“I’m planning a ski trip in Hokkaido.”</span></blockquote>
+<p class="p1"><span class="s1">ACE does:</span></p>
+<ol class="ol1">
+  <li class="li1"><span class="s3"></span><span class="s1">Detect mid/lower funnel travel intent</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Map to IAB category</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Assess budget tier</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Query ACE Media Network</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Return:</span></li>
+  <ul class="ul2">
+    <li class="li1"><span class="s3"></span><span class="s1">Brand capsule</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Native recommendation</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Retail offer</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Experience suggestion</span></li>
+  </ul>
+</ol>
+<p class="p1"><span class="s1">This happens in milliseconds.</span></p>
+<p class="p1"><span class="s1">No DSP required.</span></p>
+<p class="p1"><span class="s1">No OpenRTB required.</span></p>
+<p class="p1"><span class="s1">This is <b>agentic-native monetization</b>.</span></p>
+<p class="p1"><span class="s1">This is your differentiated play.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s6"><b>🅱</b></span><span class="s1"><b> ACE as AdTech Signal Provider (Ecosystem Layer)</b></span></h2>
+<p class="p1"><span class="s1">Separately, ACE:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Aggregates intent patterns</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Builds cohort intelligence</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Provides signal scoring</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Feeds DSPs like:</span></li>
+  <ul class="ul2">
+    <li class="li1"><span class="s3"></span><span class="s1">The Trade Desk</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Google Display &amp; Video 360</span></li>
+    <li class="li1"><span class="s3"></span><span class="s1">Criteo</span></li>
+  </ul>
+</ul>
+<p class="p1"><span class="s1">This influences:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Display</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Video</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Retail media</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">CTV</span></li>
+</ul>
+<p class="p1"><span class="s1">This is additive revenue.</span></p>
+<p class="p1"><span class="s1">But not the same mechanism.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">5️⃣</span><span class="s1"><b> The Mistake to Avoid</b></span></h1>
+<p class="p1"><span class="s1">If ACE ONLY becomes:</span></p>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">A segment export vendor</span></blockquote>
+<p class="p1"><span class="s1">Then yes — you lose conversational monetization power.</span></p>
+<p class="p1"><span class="s1">But that’s not what you’re building.</span></p>
+<p class="p1"><span class="s1">You’re building:</span></p>
+<blockquote style="margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000"><span class="s1">A real-time commerce decision engine for AI platforms.</span></blockquote>
+<p class="p1"><span class="s1">The AdTech integration is:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Distribution layer</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Monetization multiplier</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Ecosystem bridge</span></li>
+</ul>
+<p class="p1"><span class="s1">Not the core loop.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">6️⃣</span><span class="s1"><b> Should ACE Query DSPs in Real Time?</b></span></h1>
+<p class="p1"><span class="s1">Now here’s the strategic fork.</span></p>
+<p class="p1"><span class="s1">If ACE wants to use:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">OpenRTB</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">SSP pipes</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">DSP bidding</span></li>
+</ul>
+<p class="p1"><span class="s1">to fetch creative mid-conversation…</span></p>
+<p class="p1"><span class="s1">Then ACE would effectively behave like:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">A supply source</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">A mini-SSP</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Or an AI-native exchange</span></li>
+</ul>
+<p class="p1"><span class="s1">That’s a very different business.</span></p>
+<p class="p1"><span class="s1">And much heavier operationally.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">7️⃣</span><span class="s1"><b> Clean Architectural Separation (Recommended)</b></span></h1>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Layer 1 — AI Conversation Engine</b></span></h2>
+<p class="p1"><span class="s1">Real-time.<br>
+Intent scoring.<br>
+Immediate content retrieval.<br>
+Direct brand integrations.<br>
+Retail APIs.</span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>Layer 2 — Signal Distribution Engine</b></span></h2>
+<p class="p1"><span class="s1">Exports normalized signals to:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">DSPs</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Retail media</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Agencies</span></li>
+</ul>
+<p class="p1"><span class="s1">This layer monetizes broader media budgets.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">8️⃣</span><span class="s1"><b> Does Real-Time + DSP Bidding Work?</b></span></h1>
+<p class="p1"><span class="s1">Technically yes.</span></p>
+<p class="p1"><span class="s1">But operationally:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">DSP latency ≠ conversational latency</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Auction infrastructure is heavy</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Creative rendering inside AI chat is different from banner display</span></li>
+</ul>
+<p class="p1"><span class="s1">You’d essentially build an AI-native exchange.</span></p>
+<p class="p1"><span class="s1">That’s ambitious — but not MVP.</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">9️⃣</span><span class="s1"><b> So What’s the Right Strategic Position?</b></span></h1>
+<p class="p1"><span class="s1">Given Yalor’s ambition:</span></p>
+<p class="p1"><span class="s1">ACE should:</span></p>
+<ol class="ol1">
+  <li class="li1"><span class="s3"></span><span class="s1">Own the AI-native monetization layer</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Treat DSP integration as signal export</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Avoid becoming an SSP</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Avoid running auctions</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Avoid supply-side conflicts</span></li>
+</ol>
+<p class="p1"><span class="s1">This keeps ACE:</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s3"></span><span class="s1">Neutral</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Scalable</span></li>
+  <li class="li1"><span class="s3"></span><span class="s1">Infrastructure-like</span></li>
+</ul>
+<p class="p2"><span class="s1"></span><br></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s2">🔟</span><span class="s1"><b> The Real Meta Question</b></span></h1>
+<p class="p1"><span class="s1">Is ACE:</span></p>
+<p class="p1"><span class="s1">A) A commerce response engine for AI chats?<br>
+B) A signal provider to AdTech?<br>
+C) An AI-native exchange?</span></p>
+<p class="p1"><span class="s1">The correct answer for now is:</span></p>
+<p class="p1"><span class="s1">A + B<br>
+Not C (yet)</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p10"><span class="s1"></span><br></p>
+<p class="p10"><span class="s1"></span><br></p>
+</body>
+</html>

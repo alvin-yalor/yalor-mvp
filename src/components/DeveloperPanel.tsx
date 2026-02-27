@@ -8,7 +8,7 @@ import {
     OpportunityFannedOutPayload,
     BidAcceptedPayload,
     AdCpPayload,
-    IntentAnalyzedPayload
+    IntentDetectedPayload
 } from '../infrastructure/events';
 
 interface LoggedEvent {
@@ -154,7 +154,6 @@ export const DeveloperPanel = () => {
                                         <th className="py-2 px-3 font-medium">Funnel</th>
                                         <th className="py-2 px-3 font-medium">IAB</th>
                                         <th className="py-2 px-3 font-medium">Confidence</th>
-                                        <th className="py-2 px-3 font-medium">Evidence Quotes</th>
                                         <th className="py-2 px-3 font-medium">Pre-Qual Score</th>
                                     </tr>
                                 </thead>
@@ -174,13 +173,10 @@ export const DeveloperPanel = () => {
                                                 {intent.iabCategory}
                                             </td>
                                             <td className="py-2 px-3 align-top text-amber-400 font-mono">
-                                                {intent.confidenceScore}%
-                                            </td>
-                                            <td className="py-2 px-3 align-top text-slate-400 max-w-sm overflow-hidden text-ellipsis italic">
-                                                "{intent.evidenceQuotes.join('", "')}"
+                                                {intent.contextMap.confidenceScores?.LLM_INFERENCE || 0}%
                                             </td>
                                             <td className="py-2 px-3 align-top text-purple-400 font-mono">
-                                                {intent.qualificationScore}
+                                                {intent.opportunityScore}
                                             </td>
                                         </tr>
                                     ))}

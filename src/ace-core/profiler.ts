@@ -1,4 +1,6 @@
-import { UserProfile } from '../infrastructure/events';
+import { AceEvent, ExtractedProfileTraitsPayload, UserProfile } from '../infrastructure/events';
+import { eventBus } from '../infrastructure/eventBus';
+import { logger } from '../infrastructure/logger';
 
 /**
  * For the MVP, this is a simple in-memory store.
@@ -7,18 +9,29 @@ import { UserProfile } from '../infrastructure/events';
 class SessionProfilerStore {
     private profiles: Map<string, UserProfile> = new Map();
 
+    constructor() {
+        this.listenToAnalyzerEvents();
+    }
+
+    private listenToAnalyzerEvents() {
+        eventBus.safeOn(AceEvent.EXTRACTED_PROFILE_TRAITS, (payload: ExtractedProfileTraitsPayload) => {
+            logger.info(`[Profiler] Updating traits for session ${payload.sessionId}: ${Object.keys(payload.profileDelta).join(', ')}`);
+            this.updateProfile(payload.sessionId, payload.profileDelta, payload.confidenceScores);
+        });
+    }
+
     public getProfile(sessionId: string): UserProfile {
         if (!this.profiles.has(sessionId)) {
             this.profiles.set(sessionId, {
                 id: sessionId,
-                inferredData: { interests: [] },
+                inferredData: { interests: [], hobbies: [], householdContext: [], lifeEvents: [] },
                 confidenceScores: {}
             });
         }
         return this.profiles.get(sessionId)!;
     }
 
-    public updateProfile(sessionId: string, newInferredSignals: Partial<UserProfile['inferredData']>): void {
+    public updateProfile(sessionId: string, newInferredSignals: Partial<UserProfile['inferredData']>, confidenceScores: Record<string, number>): void {
         const existing = this.getProfile(sessionId);
 
         // Deep merge arrays like interests, overwrite scalar values
@@ -27,40 +40,35 @@ class SessionProfilerStore {
             ...(newInferredSignals.interests || [])
         ]));
 
+        const mergedHobbies = Array.from(new Set([
+            ...(existing.inferredData.hobbies || []),
+            ...(newInferredSignals.hobbies || [])
+        ]));
+
+        const mergedLifeEvents = Array.from(new Set([
+            ...(existing.inferredData.lifeEvents || []),
+            ...(newInferredSignals.lifeEvents || [])
+        ]));
+
+        const mergedHousehold = Array.from(new Set([
+            ...(existing.inferredData.householdContext || []),
+            ...(newInferredSignals.householdContext || [])
+        ]));
+
         const mergedData = {
             ...existing.inferredData,
             ...newInferredSignals,
-            interests: mergedInterests
+            interests: mergedInterests,
+            hobbies: mergedHobbies,
+            lifeEvents: mergedLifeEvents,
+            householdContext: mergedHousehold
         };
 
         this.profiles.set(sessionId, {
             ...existing,
-            inferredData: mergedData
+            inferredData: mergedData,
+            confidenceScores: { ...existing.confidenceScores, ...confidenceScores }
         });
-    }
-
-    // Pre-Qualification Gating Logic
-    public calculateQualificationScore(opportunityFunnelStage: 'UPPER' | 'MID' | 'LOWER', profile: UserProfile): number {
-        let score = 0;
-
-        // Baseline points based on funnel intent
-        if (opportunityFunnelStage === 'LOWER') score += 30;
-        if (opportunityFunnelStage === 'MID') score += 15;
-        if (opportunityFunnelStage === 'UPPER') score += 5;
-
-        // Multipliers for profile richness
-        if (profile.inferredData.location) score += 10;
-        if (profile.inferredData.gender) score += 5;
-        if (profile.inferredData.budgetThreshold === 'HIGH') score += 20;
-        if (profile.inferredData.budgetThreshold === 'MEDIUM') score += 10;
-
-        const interestCount = profile.inferredData.interests?.length || 0;
-        if (interestCount > 0) {
-            // Cap interest points at 15
-            score += Math.min(interestCount * 5, 15);
-        }
-
-        return score;
     }
 }
 
